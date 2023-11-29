@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+
+<html>
+	<head>
+		<title>Sales Predictor</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="static/assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+
+		<!-- Header -->
+			<header id="header">
+				<h1>Sales Prediction Model</h1>
+				
+				<p id="pred_holder" style={%if prediction == -1 %}"display: none;"{% endif %}>Model Prediction : <span id='pred'>{{prediction}}</span></p>
+				
+			</header>
+
+		<!-- Signup Form -->
+			<form id="signup-form" method="post" onsubmit = "formsubmission()">
+				<input type="text" name="TV" id="TV" placeholder="Sales obtained from TV advertisement" />
+				<input type="text" name="Radio" id="Radio" placeholder="Sales obtained from Radio advertisement" />
+				<input type="text" name="Newspaper" id="Newspaper" placeholder="Sales obtained from Newspaper advertisement" />
+				<input type="submit" value="Predict Sales"/>
+			</form>
+
+		<!-- Scripts -->
+			<script src="static/assets/js/main.js"></script>
+			<script>
+				function formsubmission(e)
+				{
+					var TV = document.getElementById("TV").value;
+					var Radio = document.getElementById("Radio").value;
+					var Newspaper = document.getElementById("Newspaper").value;
+					var dataToSend = {'TV' : TV,'Radio' : Radio,'Newspaper' : Newspaper};
+					var xhr = new XMLHttpRequest();
+					xhr.open('POST', '/', true);
+					xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+
+					xhr.onreadystatechange = function () {
+						if (xhr.readyState === 4 && xhr.status === 200) {
+							var response = JSON.parse(xhr.responseText);
+							document.getElementById('pred').innerHTML = response;
+							document.getElementById('pred_holder').style = "display : block";
+
+						} else if (xhr.readyState === 4) {
+							console.error('Error processing the data.');
+							alert('Error processing the data.');
+						}
+					};
+	
+					xhr.send(JSON.stringify(dataToSend));
+				}
+			</script>
+
+	</body>
+</html>
